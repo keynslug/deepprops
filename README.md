@@ -5,7 +5,7 @@ A set of utility routines used to operate on deep proplists.
 Overview
 --------
 
-**DeepProps** is a single module actually which hits three main goals:
+**DeepProps** is actually a single module which is designed to hit three primary goals:
 
  - allow you to access deeply nested properties inside proplists;
  - admit you to mutate proplists;
