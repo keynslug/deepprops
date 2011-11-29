@@ -1,0 +1,13 @@
+{application, deep_props, [
+
+    {description, "Deep proplists utility routines"},
+    {vsn, "0.1"},
+    {registered, []},
+    {env, []},
+
+    {applications, [
+        kernel,
+        stdlib
+    ]}
+
+]}.
