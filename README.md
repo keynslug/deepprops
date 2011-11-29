@@ -1,6 +1,7 @@
 DeepProps
 =========
-@ (https://keynslug.github.com/deepprops)
+@ https://keynslug.github.com/deepprops
+
 A set of utility routines used to operate on deep proplists.
 
 Overview
