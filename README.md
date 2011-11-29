@@ -21,7 +21,7 @@ Building and configuring
 In order to build a project you should execute something like that:
 ```
 git clone git://github.com/keynslug/deepprops.git
-cd deep
+cd deepprops
 make compile
 ```
 
