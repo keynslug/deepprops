@@ -241,10 +241,9 @@ retrieved.</p>
 is still preserved even in such cases.</p>
  
   <p>Finally for the sake of clarity it is guaranteed that the following code will run with no exceptions:
-  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
+  </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = [ {[top, level, thing], 2}, {last, 5} ],
-  Result = list([ [top, level, thing], [top, down], last ], Proplist).
-  '''</p>
+  Result = list([ [top, level, thing], [top, down], last ], Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="defaults/2">defaults(Defaults, Proplist) -&gt; Result</h3>
