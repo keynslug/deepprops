@@ -19,6 +19,7 @@ Building and configuring
 ------------------------
 
 In order to build a project you should execute something like that:
+
 ```
 git clone git://github.com/keynslug/deepprops.git
 cd deepprops
@@ -26,6 +27,7 @@ make compile
 ```
 
 Though that way this is useless so consider including it in your projects say as a rebar dependency:
+
 ```
 {'deep_props', ".*", {git, "git://github.com/keynslug/deepprops.git", "master"}}
 ```
