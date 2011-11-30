@@ -343,6 +343,7 @@ do_split([Key | Keys], {Acc, Proplist}) ->
 %% is still preserved even in such cases.
 %%
 %% Finally for the sake of clarity it is guaranteed that the following code will run with no exceptions:
+%% ```
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = [ {[top, level, thing], 2}, {last, 5} ],
 %% Result = list([ [top, level, thing], [top, down], last ], Proplist).
