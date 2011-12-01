@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <title>deep_props (deep_props) -  - erldocs.com (Erlang Documentation)</title>
+    <title>deepprops (deep_props) -  - erldocs.com (Erlang Documentation)</title>
     <link rel="search" type="application/opensearchdescription+xml"
           title="erldocs" href="/search.xml">
     <link type="text/css" rel="stylesheet" href="../erldocs.css" />
@@ -20,7 +20,7 @@
       <div style="margin:0px; padding:10px 20px;">
         
 
-<h1>deep_props</h1>
+<h1>deepprops</h1>
 <h2 class="modsummary">A set of utility routines used to operate on deep proplists.</h2>
 <div class="description">
 <p>A set of utility routines used to operate on deep proplists.</p>
@@ -60,7 +60,7 @@ is finally reached.</p>
   <p>Finally for the sake of clarity the following code will run with no exceptions:
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = 4,
-  Result = deep_props:get([top, middle], Proplist).</pre>
+  Result = deepprops:get([top, middle], Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="set/3">set(Path, Value, Proplist) -&gt; Result</h3>
@@ -84,7 +84,7 @@ is finally reached.</p>
   <p>And finally let us clarify with the following valid example:
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = [ {top, [ {level, [ {thing, new}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
-  Result = deep_props:set([top, level, thing], new, Proplist).</pre>
+  Result = deepprops:set([top, level, thing], new, Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="append/3">append(Path, Value, Proplist) -&gt; Result</h3>
@@ -110,7 +110,7 @@ be created</p>
   <p>And finally let us clarify everything with the following valid example:
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {middle, [4]} ]}, {last, 5} ],
   Result = [ {top, [ {middle, [new, 4]}, {last, 5} ],
-  Result = deep_props:append([top, middle], new, Proplist).</pre>
+  Result = deepprops:append([top, middle], new, Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="extract/2">extract(Path, Proplist) -&gt; Result</h3>
@@ -148,7 +148,7 @@ is finally reached.</p>
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]} ]}, {last, 5} ],
   Result = 3,
   Rest = [ {top, [ {level, [ {thing, 2} ]} ]}, {last, 5} ],
-  {Result, Rest} = deep_props:extract([top, level, where], Proplist).</pre>
+  {Result, Rest} = deepprops:extract([top, level, where], Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="values/2">values(Paths, Proplist) -&gt; Results</h3>
@@ -161,7 +161,7 @@ is finally reached.</p>
 which strictly preserve order of properties accessed.</p>
  
   <p>This function performs much like group <code>get</code> call. In other words the result of this function will be
-  equal to sequential application of <code>deep_props:get/3</code> in the way close to folding.</p>
+  equal to sequential application of <code>deepprops:get/3</code> in the way close to folding.</p>
  
   <p>Properties located and possibly deeply nested inside the property list <code>Proplist</code> addressed by one
   or more paths in <code>Paths</code>. A path then may be a single <code>PurePath</code> (explained further) which is semantically
@@ -177,7 +177,7 @@ is finally reached.</p>
   <p>Then following final clarification example:
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = [ 2, def, 5 ],
-  Result = deep_props:values([ [top, level, thing], {[top, down], def}, last ], Proplist).</pre>
+  Result = deepprops:values([ [top, level, thing], {[top, down], def}, last ], Proplist).</pre>
  
   <p>In the latter example the value <code>def</code> was returned for path <code>[top, down]</code>. If the default value was not
   specified through <code>{[top, down], def}</code> then the <code>undefined</code> would be returned instead.
@@ -196,7 +196,7 @@ new property list with these properties removed. These values form a list which 
 order of properties accessed.</p>
  
   <p>This function performs much like group <code>extract</code> call. In other words the result of this function will be
-  equal to sequential application of <code>deep_props:extract/3</code> in the way close to folding.</p>
+  equal to sequential application of <code>deepprops:extract/3</code> in the way close to folding.</p>
  
   <p>Properties located and possibly deeply nested inside the property list <code>Proplist</code> addressed by one
   or more paths in <code>Paths</code>. A path then may be a single <code>PurePath</code>as well as a tuple <code>{PurePath, Default}</code>
@@ -216,7 +216,7 @@ is finally reached.</p>
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = [ 2, def, 5 ],
   Rest = [ {top, [ {level, [ {where, 3} ]}, {middle, 4} ]} ],
-  {Result, Rest} = deep_props:split([ [top, level, thing], {[top, down], def}, last ], Proplist).</pre><p>
+  {Result, Rest} = deepprops:split([ [top, level, thing], {[top, down], def}, last ], Proplist).</pre><p>
  </p>
 <p><em>See also:</em> <a href="#extract-3" class="seealso">extract/3</a>.</p>
 </div></div>
@@ -243,7 +243,7 @@ is still preserved even in such cases.</p>
   <p>Finally for the sake of clarity it is guaranteed that the following code will run with no exceptions:
   </p><pre class="sh_erlang">  Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
   Result = [ {[top, level, thing], 2}, {last, 5} ],
-  Result = deep_props:list([ [top, level, thing], [top, down], last ], Proplist).</pre>
+  Result = deepprops:list([ [top, level, thing], [top, down], last ], Proplist).</pre>
 </div></div>
 <div class="function">
 <h3 id="defaults/2">defaults(Defaults, Proplist) -&gt; Result</h3>
