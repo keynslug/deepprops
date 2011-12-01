@@ -1,4 +1,4 @@
-{application, deep_props, [
+{application, deepprops, [
 
     {description, "Deep proplists utility routines"},
     {vsn, "0.1"},

@@ -29,5 +29,5 @@ make compile
 Though that way this is useless so consider including it in your projects say as a rebar dependency:
 
 ```
-{'deep_props', ".*", {git, "git://github.com/keynslug/deepprops.git", "master"}}
+{'deepprops', ".*", {git, "git://github.com/keynslug/deepprops.git", "master"}}
 ```

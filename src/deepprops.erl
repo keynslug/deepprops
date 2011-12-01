@@ -7,7 +7,7 @@
 %% <li>allow you to access a group of properties with a single call.</li>
 %% </ll>
 
--module(deep_props).
+-module(deepprops).
 
 -export([
     get/2,
@@ -48,7 +48,7 @@ get(Path, Proplist) ->
 %% ```
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = 4,
-%% Result = deep_props:get([top, middle], Proplist).
+%% Result = deepprops:get([top, middle], Proplist).
 %% '''
 
 -spec get(Path, Proplist, Default) -> Result when
@@ -87,7 +87,7 @@ do_get(_, _, Default) ->
 %% ```
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = [ {top, [ {level, [ {thing, new}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
-%% Result = deep_props:set([top, level, thing], new, Proplist).
+%% Result = deepprops:set([top, level, thing], new, Proplist).
 %% '''
 
 -spec set(Path, Value, Proplist) -> Result when
@@ -131,7 +131,7 @@ do_set([Key | Rest], Entry, Value) ->
 %% ```
 %% Proplist = [ {top, [ {middle, [4]} ]}, {last, 5} ],
 %% Result = [ {top, [ {middle, [new, 4]}, {last, 5} ],
-%% Result = deep_props:append([top, middle], new, Proplist).
+%% Result = deepprops:append([top, middle], new, Proplist).
 %% '''
 
 -spec append(Path, Value, Proplist) -> Result when
@@ -189,7 +189,7 @@ extract(Path, Proplist) ->
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]} ]}, {last, 5} ],
 %% Result = 3,
 %% Rest = [ {top, [ {level, [ {thing, 2} ]} ]}, {last, 5} ],
-%% {Result, Rest} = deep_props:extract([top, level, where], Proplist).
+%% {Result, Rest} = deepprops:extract([top, level, where], Proplist).
 %% '''
 
 -spec extract(Path, Proplist, Default) -> Result when
@@ -232,7 +232,7 @@ keymatch(_, _) -> false.
 %% which strictly preserve order of properties accessed.
 %%
 %% This function performs much like group `get' call. In other words the result of this function will be
-%% equal to sequential application of `deep_props:get/3' in the way close to folding.
+%% equal to sequential application of `deepprops:get/3' in the way close to folding.
 %%
 %% Properties located and possibly deeply nested inside the property list `Proplist' addressed by one
 %% or more paths in `Paths'. A path then may be a single `PurePath' (explained further) which is semantically
@@ -249,7 +249,7 @@ keymatch(_, _) -> false.
 %% ```
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = [ 2, def, 5 ],
-%% Result = deep_props:values([ [top, level, thing], {[top, down], def}, last ], Proplist).
+%% Result = deepprops:values([ [top, level, thing], {[top, down], def}, last ], Proplist).
 %% '''
 %% 
 %% In the latter example the value `def' was returned for path `[top, down]'. If the default value was not
@@ -291,7 +291,7 @@ values([Key | Rest], Proplist, Acc) ->
 %% order of properties accessed.
 %%
 %% This function performs much like group `extract' call. In other words the result of this function will be
-%% equal to sequential application of `deep_props:extract/3' in the way close to folding.
+%% equal to sequential application of `deepprops:extract/3' in the way close to folding.
 %%
 %% Properties located and possibly deeply nested inside the property list `Proplist' addressed by one
 %% or more paths in `Paths'. A path then may be a single `PurePath'as well as a tuple `{PurePath, Default}'
@@ -312,7 +312,7 @@ values([Key | Rest], Proplist, Acc) ->
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = [ 2, def, 5 ],
 %% Rest = [ {top, [ {level, [ {where, 3} ]}, {middle, 4} ]} ],
-%% {Result, Rest} = deep_props:split([ [top, level, thing], {[top, down], def}, last ], Proplist).
+%% {Result, Rest} = deepprops:split([ [top, level, thing], {[top, down], def}, last ], Proplist).
 %% '''
 %% 
 %% @see extract/3
@@ -346,7 +346,7 @@ do_split([Key | Keys], {Acc, Proplist}) ->
 %% ```
 %% Proplist = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
 %% Result = [ {[top, level, thing], 2}, {last, 5} ],
-%% Result = list([ [top, level, thing], [top, down], last ], Proplist).
+%% Result = deepprops:list([ [top, level, thing], [top, down], last ], Proplist).
 %% '''
 
 -spec list(Paths, Proplist) -> Result when
