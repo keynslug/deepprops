@@ -12,6 +12,7 @@
 -export([
     get/2,
     get/3,
+    require/2,
     set/3,
     extract/2, 
     extract/3, 
@@ -70,6 +71,25 @@ do_get(Path, [_ | Left], Default) ->
     do_get(Path, Left, Default);
 do_get(_, _, Default) ->
     Default.
+
+-spec require(Path, Proplist) -> Result when
+    Path     :: [term()],
+    Proplist :: proplists:proplist(),
+    Result   :: term() | no_return().
+
+%% @doc Retrieves value of a property located and possibly deeply nested inside the property list
+%% `Proplist' under path `Path'. The only difference with `get/2` is in the case when no value is
+%% present under the given key. In such situations `{novalue, Path}` exception will be thrown.
+%%
+%% @see get/2
+
+require(Path, Proplist) ->
+    case get(Path, Proplist, Unique = make_ref()) of
+        Unique ->
+            throw({novalue, Path});
+        Value ->
+            Value
+    end.
 
 %% @doc Sets value of a property to the `Value' and returns new property list. 
 %%
@@ -159,8 +179,8 @@ do_append([Key | Rest], Entry, Value) ->
 -spec extract(Path, Proplist) -> Result when
     Path     :: [Key] | Key,
     Key      :: term(),
-    Proplist :: lists:proplist(),
-    Result   :: {Value, lists:proplist()},
+    Proplist :: proplists:proplist(),
+    Result   :: {Value, proplists:proplist()},
     Value    :: term().
 
 extract(Path, Proplist) ->
@@ -447,6 +467,13 @@ get_missing_test() ->
     L = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
     R = undefined,
     ?assertEqual(R, get([top, middle, further], L)).
+
+require_test() ->
+    L = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
+    ?assertEqual(2, require([top, level, thing], L)),
+    ?assertEqual(5, require(last, L)),
+    Missing = [top, random],
+    ?assertThrow({novalue, Missing}, require(Missing, L)).
 
 append_test() ->
     L = [ {top, [ {level, [ {thing, 2}, {where, [3]} ]}, {middle, [4]} ]}, {last, 5} ],
