@@ -53,7 +53,8 @@ get(Path, Proplist) ->
 %% '''
 
 -spec get(Path, Proplist, Default) -> Result when
-    Path     :: [term()],
+    Path     :: [Key] | Key,
+    Key      :: term(),
     Proplist :: proplists:proplist(),
     Result   :: term() | Default,
     Default  :: term().
