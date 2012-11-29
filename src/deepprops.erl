@@ -25,9 +25,10 @@
 
 %% Properties deep access
 
+-type path() :: term() | [term()].
+
 -spec get(Path, Proplist) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: term() | undefined.
 
@@ -53,8 +54,7 @@ get(Path, Proplist) ->
 %% '''
 
 -spec get(Path, Proplist, Default) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: term() | Default,
     Default  :: term().
@@ -74,7 +74,7 @@ do_get(_, _, Default) ->
     Default.
 
 -spec require(Path, Proplist) -> Result when
-    Path     :: [term()],
+    Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: term() | no_return().
 
@@ -112,8 +112,7 @@ require(Path, Proplist) ->
 %% '''
 
 -spec set(Path, Value, Proplist) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Value    :: term(),
     Proplist :: proplists:proplist(),
     Result   :: proplists:proplist().
@@ -156,8 +155,7 @@ do_set([Key | Rest], Entry, Value) ->
 %% '''
 
 -spec append(Path, Value, Proplist) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Value    :: proplists:property(),
     Proplist :: proplists:proplist(),
     Result   :: proplists:proplist().
@@ -178,8 +176,7 @@ do_append([Key | Rest], Entry, Value) ->
     [{Key, do_append(Rest, Entry, Value)}].
 
 -spec extract(Path, Proplist) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: {Value, proplists:proplist()},
     Value    :: term().
@@ -214,8 +211,7 @@ extract(Path, Proplist) ->
 %% '''
 
 -spec extract(Path, Proplist, Default) -> Result when
-    Path     :: [Key] | Key,
-    Key      :: term(),
+    Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: {Value, proplists:proplist()},
     Value    :: term() | Default,
@@ -282,7 +278,7 @@ keymatch(_, _) -> false.
     Proplist :: proplists:proplist(),
     Paths    :: [Path],
     Path     :: PurePath | {PurePath, Default},
-    PurePath :: [term()] | term(),
+    PurePath :: path(),
     Default  :: term(),
     Results  :: [Result],
     Result   :: term() | Default | undefined.
@@ -301,7 +297,7 @@ values([Key | Rest], Proplist, Acc) ->
     Proplist :: proplists:proplist(),
     Paths    :: [Path],
     Path     :: PurePath | {PurePath, Default},
-    PurePath :: [term()] | term(),
+    PurePath :: path(),
     Default  :: term(),
     Result   :: {[Value], Rest},
     Value    :: term(),
@@ -372,8 +368,7 @@ do_split([Key | Keys], {Acc, Proplist}) ->
 
 -spec list(Paths, Proplist) -> Result when
     Proplist :: proplists:proplist(),
-    Paths    :: [Path],
-    Path     :: [term()] | term(),
+    Paths    :: [path()],
     Result   :: [Prop],
     Prop     :: proplists:property().
 
