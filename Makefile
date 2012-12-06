@@ -4,8 +4,8 @@ REBAR=./rebar
 
 all: compile
 
-compile: 
-	${REBAR} compile
+compile:
+	${REBAR} get-deps compile
 
 clean:
 	${REBAR} clean
