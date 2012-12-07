@@ -12,5 +12,6 @@ clean:
 	rm -fv erl_crash.dump
 
 test: compile
-	${REBAR} eunit skip_deps=true
+	${REBAR} -C rebar.tests.config get-deps compile
+	${REBAR} -C rebar.tests.config eunit skip_deps=true
 
