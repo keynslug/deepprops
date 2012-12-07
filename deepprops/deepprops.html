@@ -2,8 +2,8 @@
 <html lang="en">
 
   <head>
-    <meta charset="utf-8" />
-    <title>deepprops (deep_props) -  - erldocs.com (Erlang Documentation)</title>
+    <meta charset="latin1" />
+    <title>deepprops (deepprops) -  - erldocs.com (Erlang Documentation)</title>
     <link rel="search" type="application/opensearchdescription+xml"
           title="erldocs" href="/search.xml">
     <link type="text/css" rel="stylesheet" href="../erldocs.css" />
@@ -27,23 +27,29 @@
  
   <p>This single module has been designed to hit three primary goals:
   <ll>
-  <li>allow you to access deeply nested properties inside proplists;</li>
-  <li>admit you to mutate proplists;</li>
-  <li>allow you to access a group of properties with a single call.</li>
+  <item>allow you to access deeply nested properties inside proplists;</item>
+  <item>admit you to mutate proplists;</item>
+  <item>allow you to access a group of properties with a single call.</item>
   </ll></p></div>
+<div class="section"><h4>DATA TYPES</h4><span id="types"> </span>
+
+<taglist>
+<dt><code>path() = term() | [term()]</code></dt>
+<item><span id="type-path"> </span> </item>
+</taglist></div>
 <div class="functions"><h4>Functions</h4><hr  />
 <div class="function">
 <h3 id="get/2">get(Path, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [Key] | Key</code></li><li><code>Key = term()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = term() | undefined</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = term() | undefined</code></li></ul>
 <div class="description"><span id="get-2"> </span>
  </div></div>
 <div class="function">
 <h3 id="get/3">get(Path, Proplist, Default) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [term()]</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = term() | Default</code></li><li><code>Default = term()</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = term() | Default</code></li><li><code>Default = term()</code></li></ul>
 <div class="description"><span id="get-3"> </span>
 
 <p>Retrieves value of a property located and possibly deeply nested inside the property list
@@ -63,10 +69,25 @@ is finally reached.</p>
   Result = deepprops:get([top, middle], Proplist).</pre>
 </div></div>
 <div class="function">
+<h3 id="require/2">require(Path, Proplist) -&gt; Result</h3>
+
+<ul class="type">
+<li><code>Path = path()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = term() | no_return()</code></li></ul>
+<div class="description"><span id="require-2"> </span>
+
+<p>Retrieves mandatory value of a property located and possibly deeply nested inside the
+  property list <code>Proplist</code> under path <code>Path</code>.</p>
+ 
+  <p>The only difference with <code>get/2</code> is in the case when no value is
+  present under the given key. In such situations <code>{novalue, Path}</code> exception will be thrown.
+ </p>
+<p><em>See also:</em> <a href="#get-2" class="seealso">get/2</a>.</p>
+</div></div>
+<div class="function">
 <h3 id="set/3">set(Path, Value, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [Key] | Key</code></li><li><code>Key = term()</code></li><li><code>Value = term()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = proplist() (see module proplists)</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Value = term()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = proplist() (see module proplists)</code></li></ul>
 <div class="description"><span id="set-3"> </span>
 
 <p>Sets value of a property to the <code>Value</code> and returns new property list.</p>
@@ -90,7 +111,7 @@ is finally reached.</p>
 <h3 id="append/3">append(Path, Value, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [Key] | Key</code></li><li><code>Key = term()</code></li><li><code>Value = property() (see module proplists)</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = proplist() (see module proplists)</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Value = property() (see module proplists)</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = proplist() (see module proplists)</code></li></ul>
 <div class="description"><span id="append-3"> </span>
 
 <p>Appends the new entry <code>Value</code> to the list located under a property and returns new property list.</p>
@@ -116,14 +137,14 @@ be created</p>
 <h3 id="extract/2">extract(Path, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [Key] | Key</code></li><li><code>Key = term()</code></li><li><code>Proplist = proplist() (see module lists)</code></li><li><code>Result = {Value, proplist() (see module lists)}</code></li><li><code>Value = term()</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = {Value, proplist() (see module proplists)}</code></li><li><code>Value = term()</code></li></ul>
 <div class="description"><span id="extract-2"> </span>
  </div></div>
 <div class="function">
 <h3 id="extract/3">extract(Path, Proplist, Default) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Path = [Key] | Key</code></li><li><code>Key = term()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = {Value, proplist() (see module proplists)}</code></li><li><code>Value = term() | Default</code></li><li><code>Default = term()</code></li></ul>
+<li><code>Path = path()</code></li><li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Result = {Value, proplist() (see module proplists)}</code></li><li><code>Value = term() | Default</code></li><li><code>Default = term()</code></li></ul>
 <div class="description"><span id="extract-3"> </span>
 
 <p>Extracts the property from the property list <code>Proplist</code> and return its value and new property  
@@ -154,7 +175,7 @@ is finally reached.</p>
 <h3 id="values/2">values(Paths, Proplist) -&gt; Results</h3>
 
 <ul class="type">
-<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [Path]</code></li><li><code>Path = PurePath | {PurePath, Default}</code></li><li><code>PurePath = [term()] | term()</code></li><li><code>Default = term()</code></li><li><code>Results = [Result]</code></li><li><code>Result = term() | Default | undefined</code></li></ul>
+<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [Path]</code></li><li><code>Path = PurePath | {PurePath, Default}</code></li><li><code>PurePath = path()</code></li><li><code>Default = term()</code></li><li><code>Results = [Result]</code></li><li><code>Result = term() | Default | undefined</code></li></ul>
 <div class="description"><span id="values-2"> </span>
 
 <p>Retrieves values of one or more properties with a single invocation. These values form a list  
@@ -188,7 +209,7 @@ is finally reached.</p>
 <h3 id="split/2">split(Paths, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [Path]</code></li><li><code>Path = PurePath | {PurePath, Default}</code></li><li><code>PurePath = [term()] | term()</code></li><li><code>Default = term()</code></li><li><code>Result = {[Value], Rest}</code></li><li><code>Value = term()</code></li><li><code>Rest = proplist() (see module proplists)</code></li></ul>
+<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [Path]</code></li><li><code>Path = PurePath | {PurePath, Default}</code></li><li><code>PurePath = path()</code></li><li><code>Default = term()</code></li><li><code>Result = {[Value], Rest}</code></li><li><code>Value = term()</code></li><li><code>Rest = proplist() (see module proplists)</code></li></ul>
 <div class="description"><span id="split-2"> </span>
 
 <p>Extracts values of one or more properties with a single invocation and returns them along with  
@@ -224,7 +245,7 @@ is finally reached.</p>
 <h3 id="list/2">list(Paths, Proplist) -&gt; Result</h3>
 
 <ul class="type">
-<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [Path]</code></li><li><code>Path = [term()] | term()</code></li><li><code>Result = [Prop]</code></li><li><code>Prop = property() (see module proplists)</code></li></ul>
+<li><code>Proplist = proplist() (see module proplists)</code></li><li><code>Paths = [path()]</code></li><li><code>Result = [Prop]</code></li><li><code>Prop = property() (see module proplists)</code></li></ul>
 <div class="description"><span id="list-2"> </span>
 
 <p>Returns plain sublist of the property list with properties under <code>Paths</code> being  
@@ -266,7 +287,7 @@ is still preserved even in such cases.</p>
       </div>
       <div id="funwrapper">
         <a id="viewfuns">View Functions</a>
-        <ul id="funs"><li><a href="#get/2">get/2</a></li><li><a href="#get/3">get/3</a></li><li><a href="#set/3">set/3</a></li><li><a href="#append/3">append/3</a></li><li><a href="#extract/2">extract/2</a></li><li><a href="#extract/3">extract/3</a></li><li><a href="#values/2">values/2</a></li><li><a href="#split/2">split/2</a></li><li><a href="#list/2">list/2</a></li><li><a href="#defaults/2">defaults/2</a></li></ul>
+        <ul id="funs"><li><a href="#get/2">get/2</a></li><li><a href="#get/3">get/3</a></li><li><a href="#require/2">require/2</a></li><li><a href="#set/3">set/3</a></li><li><a href="#append/3">append/3</a></li><li><a href="#extract/2">extract/2</a></li><li><a href="#extract/3">extract/3</a></li><li><a href="#values/2">values/2</a></li><li><a href="#split/2">split/2</a></li><li><a href="#list/2">list/2</a></li><li><a href="#defaults/2">defaults/2</a></li></ul>
       </div>
     </div>
 
