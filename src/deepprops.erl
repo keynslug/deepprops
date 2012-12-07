@@ -14,18 +14,18 @@
     get/3,
     require/2,
     set/3,
-    extract/2, 
-    extract/3, 
-    append/3, 
-    list/2, 
+    extract/2,
+    extract/3,
+    append/3,
+    list/2,
     values/2,
-    split/2, 
+    split/2,
     defaults/2
 ]).
 
 %% Properties deep access
 
--type path() :: term() | [term()].
+-type path() :: term() | [term(), ...].
 
 -spec get(Path, Proplist) -> Result when
     Path     :: path(),
@@ -38,12 +38,12 @@ get(Path, Proplist) ->
 %% @doc Retrieves value of a property located and possibly deeply nested inside the property list
 %% `Proplist' under path `Path'.
 %%
-%% Path may be a single `Key' thus denoting that the property located on the top level of a 
+%% Path may be a single `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
 %%
-%% When there is no property under the `Path' the `Default' shall be the result of a call or 
+%% When there is no property under the `Path' the `Default' shall be the result of a call or
 %% `undefined' if `Default' has been not specified.
 %%
 %% Finally for the sake of clarity the following code will run with no exceptions:
@@ -64,8 +64,8 @@ get(Path, Proplist, Default) ->
 
 do_get([], Value, _) ->
     Value;
-do_get([Key | _], [Key | _], Default) ->
-    Default;
+do_get([Key | Rest], [Key | _], Default) ->
+    do_get(Rest, true, Default);
 do_get([Key | Rest], [{Key, Value} | _], Default) ->
     do_get(Rest, Value, Default);
 do_get(Path, [_ | Left], Default) ->
@@ -87,21 +87,21 @@ do_get(_, _, Default) ->
 require(Path, Proplist) ->
     case get(Path, Proplist, Unique = make_ref()) of
         Unique ->
-            throw({novalue, Path});
+            error({novalue, Path});
         Value ->
             Value
     end.
 
-%% @doc Sets value of a property to the `Value' and returns new property list. 
+%% @doc Sets value of a property to the `Value' and returns new property list.
 %%
 %% Property located and possibly deeply nested inside the property list `Proplist' under path `Path'.
-%% 
-%% Path may be a single key `Key' thus denoting that the property located on the top level of a 
+%%
+%% Path may be a single key `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
 %%
-%% If there is already such property exists the one's value will be replaced with new `Value'. 
+%% If there is already such property exists the one's value will be replaced with new `Value'.
 %% Otherwise the property will be appended to the deepest enclosing proplist addressed by the `Path'.
 %%
 %% And finally let us clarify with the following valid example:
@@ -121,10 +121,10 @@ set(Path, Value, Proplist) ->
     do_set(keynormalize(Path), Value, Proplist).
 
 %% private
-do_set([], Entry, _) -> 
+do_set([], Entry, _) ->
     Entry;
 do_set([Key | Rest], Entry, Proplist = [{_, _} | _]) ->
-    With = [ {K, set(Rest, Entry, V)} || P = {K, V} <- Proplist, keymatch(Key, P) ],
+    With = [ {K, do_set(Rest, Entry, V)} || P = {K, V} <- Proplist, keymatch(Key, P) ],
     Without = [ P || P <- Proplist, not keymatch(Key, P) ],
     case With of
         [E|_] -> [E | Without];
@@ -133,11 +133,11 @@ do_set([Key | Rest], Entry, Proplist = [{_, _} | _]) ->
 do_set([Key | Rest], Entry, Value) ->
     [{Key, do_set(Rest, Entry, Value)}].
 
-%% @doc Appends the new entry `Value' to the list located under a property and returns new property list. 
+%% @doc Appends the new entry `Value' to the list located under a property and returns new property list.
 %%
 %% Property located and possibly deeply nested inside the property list `Proplist' under path `Path'.
-%% 
-%% Path may be a single key `Key' thus denoting that the property located on the top level of a 
+%%
+%% Path may be a single key `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
@@ -163,7 +163,7 @@ do_set([Key | Rest], Entry, Value) ->
 append(Path, Entry, Acc) ->
     do_append(keynormalize(Path), Entry, Acc).
 
-do_append([], Entry, Acc) -> 
+do_append([], Entry, Acc) ->
     [Entry | Acc];
 do_append([Key | Rest], Entry, Proplist = [{_, _} | _]) ->
     With = [ {K, do_append(Rest, Entry, V)} || P = {K, V} <- Proplist, keymatch(Key, P) ],
@@ -185,11 +185,11 @@ extract(Path, Proplist) ->
     extract(Path, Proplist, undefined).
 
 %% @doc Extracts the property from the property list `Proplist' and return its value and new property
-%% list with the property removed. 
+%% list with the property removed.
 %%
 %% Property located and possibly deeply nested inside the property list `Proplist' under path `Path'.
-%% 
-%% Path may be a single key `Key' thus denoting that the property located on the top level of a 
+%%
+%% Path may be a single key `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
@@ -198,7 +198,7 @@ extract(Path, Proplist) ->
 %% value of the propery and `Rest is property list formed after the original with found property removed
 %% from the deepest enclosing property list addressed by the `Path'.
 %%
-%% On the other hand if no such property actually the tuple `{Default, Proplist}' returned where 
+%% On the other hand if no such property actually the tuple `{Default, Proplist}' returned where
 %% `Proplist' is the original property list untoched and `Default' is equal to `undefined' when no
 %% `Default' value have been passed.
 %%
@@ -257,7 +257,7 @@ keymatch(_, _) -> false.
 %% denoting that in the case of absence of the property the `Default' will be the value in the list of values.
 %% Therefore `undefined' will be that value when `Default' is not specified.
 %%
-%% `PurePath' may be a single key `Key' thus denoting that the property located on the top level of a 
+%% `PurePath' may be a single key `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
@@ -268,7 +268,7 @@ keymatch(_, _) -> false.
 %% Result = [ 2, def, 5 ],
 %% Result = deepprops:values([ [top, level, thing], {[top, down], def}, last ], Proplist).
 %% '''
-%% 
+%%
 %% In the latter example the value `def' was returned for path `[top, down]'. If the default value was not
 %% specified through `{[top, down], def}' then the `undefined' would be returned instead.
 %%
@@ -304,7 +304,7 @@ values([Key | Rest], Proplist, Acc) ->
     Rest     :: proplists:proplist().
 
 %% @doc Extracts values of one or more properties with a single invocation and returns them along with
-%% new property list with these properties removed. These values form a list which strictly preserve 
+%% new property list with these properties removed. These values form a list which strictly preserve
 %% order of properties accessed.
 %%
 %% This function performs much like group `extract' call. In other words the result of this function will be
@@ -316,10 +316,10 @@ values([Key | Rest], Proplist, Acc) ->
 %% of values. Therefore `undefined' will be that value when `Default' is not specified.
 %%
 %% The function call will return tuple `{Values, Rest}' where `Values' is list of values being explained
-%% and the `Rest' is property list with properties addressed by `Paths' removed from the corresponding 
+%% and the `Rest' is property list with properties addressed by `Paths' removed from the corresponding
 %% deepest enclosing property lists. Obviously the absent properties are not removed.
 %%
-%% `PurePath' may be a single key `Key' thus denoting that the property located on the top level of a 
+%% `PurePath' may be a single key `Key' thus denoting that the property located on the top level of a
 %% property list. As well as a list of keys it may be noting that the property is located inside a
 %% property list which is located inside another property list and so on until the top level `Proplist'
 %% is finally reached.
@@ -331,7 +331,7 @@ values([Key | Rest], Proplist, Acc) ->
 %% Rest = [ {top, [ {level, [ {where, 3} ]}, {middle, 4} ]} ],
 %% {Result, Rest} = deepprops:split([ [top, level, thing], {[top, down], def}, last ], Proplist).
 %% '''
-%% 
+%%
 %% @see extract/3
 
 split(Keys, Proplist) ->
@@ -350,9 +350,9 @@ do_split([Key | Keys], {Acc, Proplist}) ->
 %% retrieved.
 %%
 %% Properties located and possibly deeply nested inside the property list `Proplist' addressed by one
-%% or more paths in `Paths'. A `Path' then may be a single key `Key' thus denoting that the property 
-%% located on the top level of a property list. As well as a list of keys it may be noting that the 
-%% property is located inside a property list which is located inside another property list and so on 
+%% or more paths in `Paths'. A `Path' then may be a single key `Key' thus denoting that the property
+%% located on the top level of a property list. As well as a list of keys it may be noting that the
+%% property is located inside a property list which is located inside another property list and so on
 %% until the top level `Proplist' is finally reached.
 %%
 %% Worth noting that when property is not present under specific `Path' the resulting list misses this
@@ -386,7 +386,7 @@ list([], _, Acc) ->
     lists:reverse(Acc).
 
 %% @private
-keynormalize(Key) when is_list(Key) -> Key;
+keynormalize(Key = [_ | _]) -> Key;
 keynormalize(Key) -> [Key].
 
 %% @doc Retrieves the property list formed by substitution any missing properties with
@@ -439,9 +439,9 @@ set_new_test() ->
     R = [ {top, [ {level, [ {thing2, [{thing3, new}]}, {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
     ?assertEqual(R, set([top, level, thing2, thing3], new, L)).
 
-set_root_test() ->
+set_empty_test() ->
     L = [ {top, [ {level, [ {thing, 2}, {where, 3} ]} ]}, {last, 5} ],
-    R = new,
+    R = [ {[], new}, {top, [ {level, [ {thing, 2}, {where, 3} ]} ]}, {last, 5} ],
     ?assertEqual(R, set([], new, L)).
 
 get_plist_test() ->
@@ -469,7 +469,7 @@ require_test() ->
     ?assertEqual(2, require([top, level, thing], L)),
     ?assertEqual(5, require(last, L)),
     Missing = [top, random],
-    ?assertThrow({novalue, Missing}, require(Missing, L)).
+    ?assertError({novalue, Missing}, require(Missing, L)).
 
 append_test() ->
     L = [ {top, [ {level, [ {thing, 2}, {where, [3]} ]}, {middle, [4]} ]}, {last, 5} ],
@@ -497,9 +497,9 @@ extract_test() ->
     R = {3, [ {top, [ {level, [ {thing, 2} ]}, {middle, 4} ]}, {last, 5} ]},
     ?assertEqual(R, extract([top, level, where], L)).
 
-extract_root_test() ->
+extract_empty_test() ->
     L = [ {top, [ {level, [ {thing, 2}, {where, 3} ]}, {middle, 4} ]}, {last, 5} ],
-    R = {L, []},
+    R = {undefined, L},
     ?assertEqual(R, extract([], L)).
 
 extract_missing_test() ->
