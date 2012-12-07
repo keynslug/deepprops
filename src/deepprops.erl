@@ -73,16 +73,18 @@ do_get(Path, [_ | Left], Default) ->
 do_get(_, _, Default) ->
     Default.
 
+%% @doc Retrieves mandatory value of a property located and possibly deeply nested inside the
+%% property list `Proplist' under path `Path'.
+%%
+%% The only difference with `get/2' is in the case when no value is
+%% present under the given key. In such situations `{novalue, Path}' exception will be thrown.
+%%
+%% @see get/2
+
 -spec require(Path, Proplist) -> Result when
     Path     :: path(),
     Proplist :: proplists:proplist(),
     Result   :: term() | no_return().
-
-%% @doc Retrieves value of a property located and possibly deeply nested inside the property list
-%% `Proplist' under path `Path'. The only difference with `get/2` is in the case when no value is
-%% present under the given key. In such situations `{novalue, Path}` exception will be thrown.
-%%
-%% @see get/2
 
 require(Path, Proplist) ->
     case get(Path, Proplist, Unique = make_ref()) of
